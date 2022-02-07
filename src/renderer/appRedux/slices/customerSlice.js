@@ -5,14 +5,12 @@ const initialState = {
     fetching: false,
     result: [],
     page: null,
-    result: true,
     filter: null,
   },
   search: {
     fetching: false,
     result: [],
     page: null,
-    result: true,
     filter: null,
   },
   create: {
@@ -28,12 +26,32 @@ export const customerSlice = createSlice({
   name: 'customer',
   initialState,
   reducers: {
-    increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1;
+    createCustomer: (state, action) => {
+      let tempData = {};
+      const { actionType, data } = action.payload;
+      switch (actionType) {
+        case 'UPDATE_CUSTOMER_DATA':
+          tempData = {
+            data: {
+              ...(state?.create?.data || {}),
+              ...data,
+            },
+          };
+          break;
+        case 'RESET_CUSTOMER_DATA':
+          tempData = {
+            data: false,
+          };
+          break;
+        default:
+          // eslint-disable-next-line no-console
+          console.log('redux action not defined');
+          break;
+      }
+      state.create = {
+        ...state.create,
+        ...tempData,
+      };
     },
     decrement: (state) => {
       state.value -= 1;
@@ -45,7 +63,7 @@ export const customerSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } =
+export const { createCustomer, decrement, incrementByAmount } =
   customerSlice.actions;
 
 export default customerSlice.reducer;
