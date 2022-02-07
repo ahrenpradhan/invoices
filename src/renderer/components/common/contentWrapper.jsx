@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Layout } from 'antd';
 import { getObject } from 'renderer/utils/helper';
 
@@ -18,6 +19,20 @@ const ContentWrapper = ({ children, wrapperStyle }) => {
       {children}
     </Content>
   );
+};
+
+ContentWrapper.defaultProps = {
+  children: <></>,
+  wrapperStyle: {},
+};
+
+ContentWrapper.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.elementType),
+    PropTypes.elementType,
+  ]),
+  // eslint-disable-next-line react/forbid-prop-types
+  wrapperStyle: PropTypes.object,
 };
 
 export default ContentWrapper;

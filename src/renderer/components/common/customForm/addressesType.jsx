@@ -1,5 +1,6 @@
-import { Form, Input } from 'antd';
-import { getFormItem } from './common';
+import { PropTypes } from 'prop-types';
+// eslint-disable-next-line import/no-cycle
+import GetFormItem from './common';
 
 const AddressConfig = [
   {
@@ -48,17 +49,18 @@ const AddressConfig = [
     type: 'input',
   },
 ];
-
-const addressesType = ({ key }) => {
+const AddressesType = ({ key }) => {
   return (
     <>
-      {(Array.isArray(AddressConfig) ? AddressConfig : []).map((_, index) =>
-        getFormItem({
-          ..._,
-          key: Array.isArray(key) ? [...key, _key] : [key, _.key],
-          index,
-        })
-      )}
+      {(Array.isArray(AddressConfig) ? AddressConfig : []).map((_, index) => (
+        <GetFormItem
+          value={_.value}
+          child={_?.child}
+          type={_?.type}
+          index={index}
+          key={Array.isArray(key) ? [...key, _.key] : [key, _.key]}
+        />
+      ))}
       {/* <Form.Item
         name={['address', 'street']}
         // noStyle
@@ -70,4 +72,8 @@ const addressesType = ({ key }) => {
   );
 };
 
-export default addressesType;
+AddressesType.propTypes = {
+  key: PropTypes.node.isRequired,
+};
+
+export default AddressesType;

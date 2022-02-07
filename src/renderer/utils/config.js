@@ -1,4 +1,4 @@
-export const sidebar_config = {
+export const sidebarConfig = {
   menu: [
     {
       title: 'Dashboard',
@@ -8,7 +8,7 @@ export const sidebar_config = {
     {
       title: 'Invoice',
       iconName: 'formOutlined',
-      children: [
+      child: [
         {
           title: 'Create',
           link: '/invoice/create',
@@ -24,7 +24,7 @@ export const sidebar_config = {
     {
       title: 'Customer',
       iconName: 'userOutlined',
-      children: [
+      child: [
         {
           title: 'Create',
           link: '/customer/create',
@@ -45,3 +45,5 @@ export const sidebar_config = {
   ],
   collapsed: false,
 };
+
+export const randomConst = 'hahaha';

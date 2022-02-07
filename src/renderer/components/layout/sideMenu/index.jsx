@@ -1,5 +1,8 @@
+import PropTypes from 'prop-types';
+
 import { Layout, Menu } from 'antd';
 import { Link } from 'react-router-dom';
+
 import {
   // VideoCameraOutlined,
   // UploadOutlined,
@@ -28,7 +31,7 @@ const getIcon = (iconName) => {
     teamOutlined: <TeamOutlined />,
     default: <DesktopOutlined />,
   };
-  return iconName === false ? null : TEMP_OBJ[iconName] || TEMP_OBJ['default'];
+  return iconName === false ? null : TEMP_OBJ[iconName] || TEMP_OBJ.default;
 };
 
 const sideMenuItem = ({ key, title, custom_key, iconName, link }) => {
@@ -43,20 +46,20 @@ const sideMenuItem = ({ key, title, custom_key, iconName, link }) => {
   );
 };
 
-const sideMenuSubMenu = ({ key, title, children, iconName }) => {
+const sideMenuSubMenu = ({ key, title, child, iconName }) => {
   return (
     <SubMenu
       key={key || title.toLowerCase()}
       icon={getIcon(iconName)}
       title={title}
     >
-      {children
+      {child
         .map((_) => ({
           ..._,
-          custom_key: title + '-' + _.title,
+          custom_key: `${title}-${_.title}`,
         }))
         .map((_) =>
-          Array.isArray(_.children)
+          Array.isArray(_.child)
             ? sideMenuSubMenu({ ..._ })
             : sideMenuItem({ ..._ })
         )}
@@ -81,7 +84,7 @@ const SideMenu = ({ collapsed = false, sidebarConfig = [] }) => {
               custom_key: _.title,
             }))
             .map((_) =>
-              Array.isArray(_.children)
+              Array.isArray(_.child)
                 ? sideMenuSubMenu({ ..._ })
                 : sideMenuItem({ ..._ })
             )
@@ -91,6 +94,16 @@ const SideMenu = ({ collapsed = false, sidebarConfig = [] }) => {
       </Menu>
     </Sider>
   );
+};
+
+SideMenu.defaultProps = {
+  collapsed: false,
+  sidebarConfig: [],
+};
+
+SideMenu.propTypes = {
+  collapsed: PropTypes.bool,
+  sidebarConfig: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default SideMenu;

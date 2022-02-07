@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Table, Switch } from 'antd';
 
 const columns = [
@@ -64,11 +64,12 @@ const columns = [
     key: 'operation',
     fixed: 'right',
     width: 100,
-    render: () => <a>action</a>,
+    render: () => <span>action</span>,
   },
 ];
 
 const data = [];
+// eslint-disable-next-line no-plusplus
 for (let i = 0; i < 100; i++) {
   data.push({
     key: i,
@@ -94,13 +95,13 @@ const ViewCustomer = () => {
       columns={columns}
       dataSource={data}
       scroll={{ x: 1500 }}
-      summary={(pageData) => (
+      summary={() => (
         <Table.Summary fixed={fixedTop ? 'top' : 'bottom'}>
           <Table.Summary.Row>
             <Table.Summary.Cell index={0} colSpan={2}>
               <Switch
-                checkedChildren="Fixed Top"
-                unCheckedChildren="Fixed Top"
+                checkedchild="Fixed Top"
+                unCheckedchild="Fixed Top"
                 checked={fixedTop}
                 onChange={() => {
                   setFixedTop(!fixedTop);
