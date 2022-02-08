@@ -24,6 +24,7 @@ const AddressSection = ({
           background: 'white',
           borderBottom: '1px solid #c3c3c3',
           marginBottom: '0',
+          paddingTop: '12px',
         }}
       />
       <ContentWrapper
@@ -33,6 +34,7 @@ const AddressSection = ({
           flexWrap: 'wrap',
           padding: '0 12px 12px',
           marginTop: 0,
+          borderLeft: '1px dashed #f0f0f0',
         }}
       >
         <CustomForm
@@ -40,7 +42,7 @@ const AddressSection = ({
           initialValues={initialValues}
           currentValues={getArray(currentValues?.main_address, false)}
           form_config={form_config}
-          handleUpdate={() => handleUpdate('main_address')}
+          handleUpdate={(...params) => handleUpdate('main_address', ...params)}
           wrapperStyle={{
             width: '440px',
             position: 'relative',
@@ -49,13 +51,16 @@ const AddressSection = ({
             top: '98px',
             padding: '24px 0 0',
           }}
+          innerWrapperStyle={{ borderLeft: '1px dashed #f0f0f0' }}
         />
         <CustomForm
           title="Shipping Address"
           initialValues={initialValues}
           currentValues={getArray(currentValues?.shipping_address, false)}
           form_config={form_config}
-          handleUpdate={() => handleUpdate('shipping_address')}
+          handleUpdate={(...params) =>
+            handleUpdate('shipping_address', ...params)
+          }
           wrapperStyle={{
             width: '440px',
             position: 'relative',
@@ -66,6 +71,7 @@ const AddressSection = ({
             display: 'flex',
             justifyContent: 'space-between',
           }}
+          innerWrapperStyle={{ borderLeft: '1px dashed #f0f0f0' }}
           additionTitleContent={
             <Button
               onClick={() =>

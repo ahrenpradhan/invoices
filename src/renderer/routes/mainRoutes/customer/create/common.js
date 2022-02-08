@@ -37,8 +37,26 @@ const aboutUserConfig = {
     {
       value: 'Customer Type',
       key: 'customer_type',
-      defaultValue: '',
-      type: 'input',
+      defaultValue: 'business',
+      type: 'select-single',
+      options: [
+        {
+          title: 'Business',
+          value: 'business',
+          key: 'business',
+        },
+        {
+          title: 'Single User',
+          value: 'single_user',
+          key: 'single_user',
+        },
+      ],
+      rules: [
+        {
+          required: true,
+          message: 'test',
+        },
+      ],
     },
     {
       value: 'Primary Contact',
@@ -52,6 +70,12 @@ const aboutUserConfig = {
       key: 'company_name',
       defaultValue: '',
       type: 'input',
+      rules: [
+        {
+          required: true,
+          message: 'test',
+        },
+      ],
     },
     {
       value: 'Company Display Name',
@@ -65,12 +89,24 @@ const aboutUserConfig = {
       key: 'customer_email',
       defaultValue: '',
       type: 'input',
+      rules: [
+        {
+          required: true,
+          message: 'test',
+        },
+      ],
     },
     {
       value: 'Phone Number',
       key: 'phoen_number',
       defaultValue: '',
       type: 'input',
+      rules: [
+        {
+          required: true,
+          message: 'test',
+        },
+      ],
       // work phone , mobile
     },
     {
@@ -91,11 +127,6 @@ const aboutUserConfig = {
       defaultValue: '',
       type: 'input',
     },
-    // {
-    //   value: 'Addresses',
-    //   key: 'addresses',
-    //   type: 'addressesInput',
-    // },
   ],
 };
 const aboutUserConfigInitialValues = getInitialValues(aboutUserConfig);
@@ -112,6 +143,30 @@ const addressConfig = {
     },
   },
   inputValues: [
+    {
+      value: 'Customer Type',
+      key: 'customer_type',
+      defaultValue: 'business',
+      type: 'select-single',
+      options: [
+        {
+          title: 'Business',
+          value: 'business',
+          key: 'business',
+        },
+        {
+          title: 'Single User',
+          value: 'single_user',
+          key: 'single_user',
+        },
+      ],
+      rules: [
+        {
+          required: true,
+          message: 'test',
+        },
+      ],
+    },
     {
       value: 'Attention',
       key: 'attention',

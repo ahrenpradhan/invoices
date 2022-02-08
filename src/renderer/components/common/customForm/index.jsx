@@ -15,6 +15,7 @@ const CustomForm = ({
   currentValues,
   handleUpdate,
   wrapperStyle,
+  innerWrapperStyle,
   topHeaderWrapperStyle,
   additionTitleContent,
 }) => {
@@ -45,7 +46,13 @@ const CustomForm = ({
           {additionTitleContent && additionTitleContent}
         </div>
       )}
-      <ContentWrapper wrapperStyle={{ margin: 0, paddingBottom: 0 }}>
+      <ContentWrapper
+        wrapperStyle={{
+          margin: 0,
+          paddingBottom: 0,
+          ...getObject(innerWrapperStyle),
+        }}
+      >
         <Form
           form={form}
           {...(form_config?.formItemLayout || {})}
@@ -79,6 +86,7 @@ CustomForm.defaultProps = {
   currentValues: false,
   handleUpdate: () => {},
   wrapperStyle: {},
+  innerWrapperStyle: {},
   topHeaderWrapperStyle: {},
   additionTitleContent: <></>,
 };
@@ -90,6 +98,7 @@ CustomForm.propTypes = {
   currentValues: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   handleUpdate: PropTypes.elementType,
   wrapperStyle: PropTypes.object,
+  innerWrapperStyle: PropTypes.object,
   topHeaderWrapperStyle: PropTypes.object,
   additionTitleContent: PropTypes.oneOfType([
     PropTypes.elementType,

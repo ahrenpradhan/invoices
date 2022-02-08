@@ -1,6 +1,5 @@
-import React from 'react';
-import CreateCustomer from './create';
 import { Routes, Route } from 'react-router-dom';
+import CreateCustomer from './create';
 
 export default function CustomerRoutes() {
   return (

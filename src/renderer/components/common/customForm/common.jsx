@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types';
 // import AddressesType from './addressesType';
 import InputType from './inputType';
+import SelectSingleType from './selectSingleType';
 
 const GetFormItem = ({
   value,
-  child = null,
+  child,
   key,
-  type = null,
-  index = null,
+  type,
+  options,
+  index,
   defaultValue,
-  placeholder = null,
+  placeholder,
+  rules,
 }) => {
   if (Array.isArray(value.child)) {
     return child.map((_, _index) => (
@@ -19,8 +22,9 @@ const GetFormItem = ({
         key={Array.isArray(key) ? [...key, _.key] : [key, _.key]}
         type={_?.type}
         index={_index}
-        defaultValue={defaultValue}
-        placeholder={placeholder}
+        defaultValue={_?.defaultValue || defaultValue}
+        placeholder={_?.placeholder || placeholder}
+        rules={_?.rules || rules}
       />
     ));
   }
@@ -34,7 +38,23 @@ const GetFormItem = ({
           key={key || value + index}
           customKey={key || value + index}
           index={index}
+          rules={rules}
         />
+      );
+    case 'select-single':
+      return options ? (
+        <SelectSingleType
+          value={value}
+          options={options}
+          placeholder={placeholder}
+          defaultValue={defaultValue}
+          key={key || value + index}
+          customKey={key || value + index}
+          index={index}
+          rules={rules}
+        />
+      ) : (
+        <></>
       );
     default:
       return <></>;
@@ -46,9 +66,11 @@ GetFormItem.defaultProps = {
   child: [],
   // key,
   type: null,
+  options: false,
   index: 0,
   defaultValue: null,
   placeholder: null,
+  rules: [],
 };
 
 GetFormItem.propTypes = {
@@ -57,8 +79,16 @@ GetFormItem.propTypes = {
   child: PropTypes.array,
   key: PropTypes.string.isRequired,
   type: PropTypes.string,
+  options: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.object),
+    PropTypes.bool,
+  ]),
   defaultValue: PropTypes.string,
   placeholder: PropTypes.string,
   index: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  rules: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.object),
+    PropTypes.bool,
+  ]),
 };
 export default GetFormItem;

@@ -14,6 +14,8 @@ const AboutUserSection = ({
       initialValues={initialValues}
       currentValues={currentValues}
       handleUpdate={handleUpdate}
+      topHeaderWrapperStyle={{ paddingTop: '12px' }}
+      innerWrapperStyle={{ borderLeft: '1px dashed #f0f0f0' }}
     />
   );
 };
