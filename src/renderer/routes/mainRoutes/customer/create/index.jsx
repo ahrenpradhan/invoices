@@ -1,26 +1,66 @@
-import { useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCustomer } from 'renderer/appRedux/slices/customerSlice';
-
 import ContentWrapper from 'renderer/components/common/contentWrapper';
-
-import { getArray } from 'renderer/utils/helper';
-
+import { formConfig } from 'renderer/utils/config';
+import {
+  getArray,
+  getInitialValues,
+  getInitialFieldValues,
+  validateFormData,
+} from 'renderer/utils/helper';
 import AboutUserSection from './aboutUserSection';
 import AddressSection from './addressSection';
-import {
+
+const {
   aboutUserConfig,
   aboutUserConfigInitialValues,
   aboutUserConfigInitialFieldValues,
   addressConfig,
   addressConfigInitialValues,
   addressConfigInitialFieldValues,
-} from './common';
+} = {
+  aboutUserConfig: formConfig.aboutUserConfig,
+  aboutUserConfigInitialValues: getInitialValues(formConfig.aboutUserConfig),
+  aboutUserConfigInitialFieldValues: getInitialFieldValues(
+    formConfig.aboutUserConfig
+  ),
+  addressConfig: formConfig.addressConfig,
+  addressConfigInitialValues: getInitialValues(formConfig.addressConfig),
+  addressConfigInitialFieldValues: getInitialFieldValues(
+    formConfig.addressConfig
+  ),
+};
 
 const CreateCustomer = () => {
+  const [state, setState] = useState({
+    aboutUserConfig,
+    aboutUserConfigInitialValues,
+    aboutUserConfigInitialFieldValues,
+    addressConfig,
+    addressConfigInitialValues,
+    addressConfigInitialFieldValues,
+    loaded: false,
+  });
   const dispatch = useDispatch();
-  const customerFormData = useSelector((state) => state.customer.create.data);
+  const customerFormData = useSelector((_) => _.customer.create.data);
 
+  const validationStatus = (_data) => {
+    const TEMPOBJ = {
+      ...customerFormData,
+      ..._data,
+    };
+    return Object.keys(TEMPOBJ)
+      .map(
+        (_) =>
+          validateFormData(
+            TEMPOBJ[_],
+            _ === 'about' ? aboutUserConfig : addressConfig
+          ) || false
+      )
+      .reduce((acc, current) => acc && current, true);
+  };
   const resetCustomerDetails = () => {
     dispatch(
       createCustomer({
@@ -32,7 +72,10 @@ const CreateCustomer = () => {
     dispatch(
       createCustomer({
         actionType: 'UPDATE_CUSTOMER_DATA',
-        data,
+        data: {
+          data,
+          validation: validationStatus(data),
+        },
       })
     );
   };
@@ -43,16 +86,18 @@ const CreateCustomer = () => {
           [formName]: data,
         });
         break;
-      case 'COPY_FROM_MAIN_ADDRESS':
+      case 'COPY_FROM_BILLING_ADDRESS':
         updateCustomerDetails({
           [formName]:
-            customerFormData?.main_address || addressConfigInitialFieldValues,
+            customerFormData?.billing_address ||
+            addressConfigInitialFieldValues,
         });
         break;
       default:
         break;
     }
   };
+
   useEffect(() => {
     // window.api.receiveOnce('db:get', (data) => {
     //   // console.log(`Received ${data} from main process`);
@@ -61,33 +106,68 @@ const CreateCustomer = () => {
     // window.api.send('db:operation', 'db:get', 'find', 'customers');
 
     // onLoad
-    updateCustomerDetails({
-      // ['about']: aboutUserConfigInitialValues,
-      // ['main_address']: addressConfigInitialValues,
-      // ['shipping_address']: addressConfigInitialValues,
-      about: aboutUserConfigInitialFieldValues,
-      main_address: addressConfigInitialFieldValues,
-      shipping_address: addressConfigInitialFieldValues,
-    });
+    if (!state.loaded) {
+      updateCustomerDetails({
+        // ['about']: aboutUserConfigInitialValues,
+        // ['billing_address']: addressConfigInitialValues,
+        // ['shipping_address']: addressConfigInitialValues,
+        about: state.aboutUserConfigInitialFieldValues,
+        billing_address: state.addressConfigInitialFieldValues,
+        shipping_address: state.addressConfigInitialFieldValues,
+      });
+    }
     return () => {
       resetCustomerDetails();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    if (!state.loaded) {
+      setState({
+        ...state,
+        loaded: true,
+      });
+    } else {
+      // console.log('changes witnessed');
+      const tempValue = customerFormData?.about?.find(
+        (_f) => _f.name[0] === 'customer_type'
+      )?.value;
+      setState({
+        ...state,
+        aboutUserConfig: {
+          ...state.aboutUserConfig,
+          inputValues: aboutUserConfig.inputValues
+            .map((_) =>
+              !_?.alternateParams
+                ? _
+                : {
+                    ..._,
+                    ..._.alternateParams(tempValue),
+                  }
+            )
+            .filter((_) => !_?.exclude),
+        },
+      });
+    }
+  }, [customerFormData]);
   return (
     <ContentWrapper wrapperStyle={{ marginTop: '24px' }}>
-      <AboutUserSection
-        form_config={aboutUserConfig}
-        initialValues={aboutUserConfigInitialValues}
-        currentValues={getArray(customerFormData?.about, false)}
-        handleUpdate={(...params) => handleUpdate('about', ...params)}
-      />
-      <AddressSection
-        form_config={addressConfig}
-        initialValues={addressConfigInitialValues}
-        currentValues={customerFormData}
-        handleUpdate={handleUpdate}
-      />
+      {state.loaded && (
+        <>
+          <AboutUserSection
+            form_config={state.aboutUserConfig}
+            initialValues={state.aboutUserConfigInitialValues}
+            currentValues={getArray(customerFormData?.about, false)}
+            handleUpdate={(...params) => handleUpdate('about', ...params)}
+          />
+          <AddressSection
+            form_config={state.addressConfig}
+            initialValues={state.addressConfigInitialValues}
+            currentValues={customerFormData}
+            handleUpdate={handleUpdate}
+          />
+        </>
+      )}
     </ContentWrapper>
   );
 };

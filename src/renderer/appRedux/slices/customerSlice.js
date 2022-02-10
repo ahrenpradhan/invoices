@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { customerHelper } from 'renderer/utils/helper';
 
 const initialState = {
   all: {
@@ -15,6 +16,7 @@ const initialState = {
   },
   create: {
     data: null,
+    validation: false,
   },
   edit: {
     initial: null,
@@ -34,9 +36,18 @@ export const customerSlice = createSlice({
           tempData = {
             data: {
               ...(state?.create?.data || {}),
-              ...data,
+              ...data.data,
             },
+            validation: data.validation,
           };
+          break;
+        case 'CREATE_CUSTOMER_DATA':
+          window.api.send('db:operation', 'db:create', 'insert', 'customers', {
+            data: customerHelper(
+              'GET_CUSTOMER_DATA',
+              state?.create?.validation ? state?.create?.data : false
+            ),
+          });
           break;
         case 'RESET_CUSTOMER_DATA':
           tempData = {
@@ -53,6 +64,32 @@ export const customerSlice = createSlice({
         ...tempData,
       };
     },
+    allCustomer: (state, action) => {
+      let tempData = {};
+      const { actionType, data } = action.payload;
+      switch (actionType) {
+        case 'FETCH_CUSTOMER_DETAILS':
+          tempData = {
+            result: [...(state?.all?.result || []), ...data.result],
+            page: data.page || 1,
+            filter: null,
+          };
+          break;
+        case 'RESET_CUSTOMER':
+          tempData = {
+            ...initialState.all,
+          };
+          break;
+        default:
+          // eslint-disable-next-line no-console
+          console.log('redux action not defined');
+          break;
+      }
+      state.all = {
+        ...state.all,
+        ...tempData,
+      };
+    },
     decrement: (state) => {
       state.value -= 1;
     },
@@ -63,7 +100,7 @@ export const customerSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { createCustomer, decrement, incrementByAmount } =
+export const { createCustomer, allCustomer, decrement, incrementByAmount } =
   customerSlice.actions;
 
 export default customerSlice.reducer;

@@ -16,7 +16,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import InitialOtherProcesses from './src';
+import IpcModelsInitialization from './models';
 // require('@electron/remote/main').initialize();
 
 export default class AppUpdater {
@@ -112,7 +112,7 @@ const createWindow = async () => {
 /**
  * Add IPC Main listeners...
  */
-InitialOtherProcesses();
+IpcModelsInitialization();
 
 /**
  * Add event listeners...

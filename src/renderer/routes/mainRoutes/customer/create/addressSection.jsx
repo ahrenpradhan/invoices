@@ -38,11 +38,13 @@ const AddressSection = ({
         }}
       >
         <CustomForm
-          title="Main Address"
+          title="Billing Address"
           initialValues={initialValues}
-          currentValues={getArray(currentValues?.main_address, false)}
+          currentValues={getArray(currentValues?.billing_address, false)}
           form_config={form_config}
-          handleUpdate={(...params) => handleUpdate('main_address', ...params)}
+          handleUpdate={(...params) =>
+            handleUpdate('billing_address', ...params)
+          }
           wrapperStyle={{
             width: '440px',
             position: 'relative',
@@ -75,7 +77,7 @@ const AddressSection = ({
           additionTitleContent={
             <Button
               onClick={() =>
-                handleUpdate('shipping_address', 'COPY_FROM_MAIN_ADDRESS')
+                handleUpdate('shipping_address', 'COPY_FROM_BILLING_ADDRESS')
               }
             >
               Copy Main Address
