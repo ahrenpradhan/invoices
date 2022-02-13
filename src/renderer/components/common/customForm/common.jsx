@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 // import AddressesType from './addressesType';
 import InputType from './inputType';
 import SelectSingleType from './selectSingleType';
+import SwitchType from './switchType';
+import DateType from './dateType';
 
 const GetFormItem = ({
   value,
@@ -38,6 +40,17 @@ const GetFormItem = ({
           key={key || value + index}
           customKey={key || value + index}
           index={index}
+          rules={rules}
+        />
+      );
+    case 'switch':
+      return <SwitchType value={value} customKey={key || value + index} />;
+    case 'date':
+      return (
+        <DateType
+          value={value}
+          placeholder={placeholder}
+          customKey={key || value + index}
           rules={rules}
         />
       );

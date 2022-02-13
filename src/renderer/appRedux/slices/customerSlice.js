@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import { createSlice } from '@reduxjs/toolkit';
 import { customerHelper } from 'renderer/utils/helper';
 
@@ -90,8 +91,29 @@ export const customerSlice = createSlice({
         ...tempData,
       };
     },
-    decrement: (state) => {
-      state.value -= 1;
+    searchCustomer: (state, action) => {
+      let tempData = state.search;
+      const { actionType, data } = action.payload;
+      switch (actionType) {
+        case 'GET_CUSTOMER':
+          tempData = {
+            ...tempData,
+            ...data,
+          };
+          break;
+        case 'RESET_CUSTOMER':
+          tempData = {
+            ...initialState.search,
+          };
+          break;
+        default:
+          alert('actionType not defined');
+          break;
+      }
+      state.search = {
+        ...state.search,
+        ...tempData,
+      };
     },
     incrementByAmount: (state, action) => {
       state.value += action.payload;
@@ -100,7 +122,11 @@ export const customerSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { createCustomer, allCustomer, decrement, incrementByAmount } =
-  customerSlice.actions;
+export const {
+  createCustomer,
+  allCustomer,
+  searchCustomer,
+  incrementByAmount,
+} = customerSlice.actions;
 
 export default customerSlice.reducer;

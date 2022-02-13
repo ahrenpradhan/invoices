@@ -2,6 +2,7 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable react/forbid-prop-types */
 import PropTypes from 'prop-types';
+import Moment from 'moment';
 
 export const getObject = (OBJ) => (typeof OBJ === 'object' ? OBJ : {});
 
@@ -22,12 +23,31 @@ export const getInitialValues = (form_config) => {
   return tempInitialValues;
 };
 
-export const getInitialFieldValues = (form_config) => {
+export const getInitialFieldValues = (
+  form_config,
+  extra = {
+    dateToString: false,
+  }
+) => {
   const formList = form_config?.inputValues;
   return Array.isArray(formList)
     ? formList.map((_) => ({
         name: [_.key],
-        value: _.defaultValue || '',
+        value:
+          // eslint-disable-next-line no-nested-ternary
+          _.type === 'date'
+            ? extra?.dateToString
+              ? Moment(
+                  typeof _?.defaultValue === 'string'
+                    ? new Date(_?.defaultValue)
+                    : _?.defaultValue
+                ).toISOString()
+              : Moment(
+                  typeof _?.defaultValue === 'string'
+                    ? new Date(_?.defaultValue)
+                    : _?.defaultValue
+                )
+            : _?.defaultValue || '',
       }))
     : false;
 };
@@ -82,8 +102,40 @@ export const customerHelper = (action = '', data = {}) => {
   }
   return false;
 };
-
 customerHelper.propTypes = {
   action: PropTypes.string,
   data: PropTypes.object,
+};
+
+export const addressToText = (addressObj) => {
+  const tempAddress = [];
+  if (addressObj?.attention) tempAddress.push(`${addressObj?.attention}`);
+  if (addressObj?.address_line_1)
+    tempAddress.push(`${addressObj?.address_line_1}`);
+  if (addressObj?.address_line_2)
+    tempAddress.push(`${addressObj?.address_line_2}`);
+
+  if (addressObj?.city || addressObj?.state) {
+    tempAddress.push(
+      [
+        addressObj?.city && `${addressObj?.city}`,
+        addressObj?.state && `${addressObj?.state}`,
+      ]
+        .filter((_) => _)
+        .join(', ')
+    );
+  }
+  if (addressObj?.country_region || addressObj?.zip_code) {
+    tempAddress.push(
+      [
+        addressObj?.country_region && `${addressObj?.country_region}`,
+        addressObj?.zip_code && `${addressObj?.zip_code}`,
+      ]
+        .filter((_) => _)
+        .join(' - ')
+    );
+  }
+  if (addressObj?.phone) tempAddress.push(`Phone : ${addressObj?.phone}`);
+  if (addressObj?.fax) tempAddress.push(`Fax : ${addressObj?.fax}`);
+  return tempAddress.join(',\n');
 };

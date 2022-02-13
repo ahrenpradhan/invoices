@@ -179,47 +179,11 @@ export const formConfig = {
       },
     },
     inputValues: [
-      // {
-      //   value: 'Customer Type',
-      //   key: 'customer_type',
-      //   defaultValue: 'business',
-      //   type: 'select-single',
-      //   options: [
-      //     {
-      //       title: 'Business',
-      //       value: 'business',
-      //       key: 'business',
-      //     },
-      //     {
-      //       title: 'Single User',
-      //       value: 'single_user',
-      //       key: 'single_user',
-      //     },
-      //   ],
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: 'test',
-      //     },
-      //   ],
-      // },
       {
         value: 'Attention',
         key: 'attention',
         defaultValue: '',
         type: 'input',
-      },
-      {
-        value: 'Country / Region',
-        key: 'country_region',
-        defaultValue: '',
-        type: 'input',
-        rules: [
-          {
-            required: true,
-            message: 'test',
-          },
-        ],
       },
       {
         value: 'Address Line 1',
@@ -264,6 +228,18 @@ export const formConfig = {
         ],
       },
       {
+        value: 'Country / Region',
+        key: 'country_region',
+        defaultValue: '',
+        type: 'input',
+        rules: [
+          {
+            required: true,
+            message: 'test',
+          },
+        ],
+      },
+      {
         value: 'Zip code',
         key: 'zip_code',
         defaultValue: '',
@@ -297,4 +273,93 @@ export const formConfig = {
   },
 };
 
-export const randomConst = 'hahaha';
+export const invoiceConfig = {
+  initData: {
+    config: null,
+    customer: {
+      billed: {
+        customer: null,
+        address: null,
+      },
+      shipped: {
+        customer: null,
+        address: null,
+      },
+    },
+    products: [],
+    tax: [],
+  },
+  config: {
+    formConfig: {
+      formLayout: 'horizontal',
+      formItemLayout: {
+        labelCol: {
+          span: 8,
+        },
+        wrapperCol: {
+          span: 16,
+        },
+      },
+      inputValues: [
+        {
+          value: 'Invoice Type',
+          key: 'invoice_type',
+          defaultValue: 'purchase',
+          type: 'select-single',
+          options: [
+            {
+              title: 'Purchase',
+              value: 'purchase',
+              key: 'purchase',
+            },
+            {
+              title: 'Billing',
+              value: 'billing',
+              key: 'billing',
+            },
+          ],
+          rules: [
+            {
+              required: true,
+              message: 'This field is mandetory',
+            },
+          ],
+        },
+        {
+          value: 'Date',
+          key: 'customDate',
+          // defaultValue: new Date().toISOString(),
+          placeholder: 'Creation Date',
+          type: 'date',
+          rules: [
+            {
+              required: true,
+              message: 'This field is mandetory',
+            },
+          ],
+        },
+        {
+          value: 'Note for personal',
+          key: 'note',
+          defaultValue: '',
+          placeholder:
+            'Use this field to note something for personal use only.',
+          type: 'input',
+        },
+      ],
+    },
+  },
+  customerConfig: {
+    formConfig: {
+      formLayout: 'horizontal',
+      formItemLayout: {
+        labelCol: {
+          span: 8,
+        },
+        wrapperCol: {
+          span: 14,
+        },
+      },
+    },
+  },
+};

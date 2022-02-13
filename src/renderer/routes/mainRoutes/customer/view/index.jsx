@@ -10,8 +10,6 @@ const ViewCustomer = () => {
 
   const getCustomerList = () => {
     window.api.receiveOnce('db:get', (_data) => {
-      // console.log(`Received ${data} from main process`);
-      console.log(_data);
       if (_data.status && Array.isArray(_data?.data?.result)) {
         dispatch(
           allCustomer({
