@@ -53,6 +53,22 @@ export const invoiceSlice = createSlice({
             },
           };
           break;
+        case 'UPDATE_INVOICE_PRODUCT_DATA_BY_ID':
+          tempData = {
+            ...tempData,
+            data: {
+              ...(tempData.data || {}),
+              products: tempData.data.products.map((_) =>
+                _.id === data.id
+                  ? {
+                      ..._,
+                      ...data,
+                    }
+                  : _
+              ),
+            },
+          };
+          break;
         case 'ADD_NEW_PRODUCT_TO_LIST':
           tempData = {
             ...tempData,

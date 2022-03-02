@@ -1,9 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-props-no-spreading */
+import { useDispatch } from 'react-redux';
+import { createInvoice } from 'renderer/appRedux/slices/invoiceSlice';
 import { Row, Col, Input } from 'antd';
 import { MdDragIndicator } from 'react-icons/md';
-import { AppstoreTwoTone, DeleteFilled } from '@ant-design/icons';
+import { DeleteFilled } from '@ant-design/icons';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import styled from 'styled-components';
@@ -25,10 +27,21 @@ const ProductItemWrapper = styled.li`
   }
 `;
 
-const ProductItem = ({ id, index, selectedRow }) => {
+const ProductItem = ({ id, index, selectedRow, product, productCount = 0 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
-
+  const dispatch = useDispatch();
+  const updateDataById = (param, value) => {
+    dispatch(
+      createInvoice({
+        actionType: 'UPDATE_INVOICE_PRODUCT_DATA_BY_ID',
+        data: {
+          ...product,
+          [param]: value,
+        },
+      })
+    );
+  };
   return (
     <ProductItemWrapper
       ref={setNodeRef}
@@ -65,26 +78,47 @@ const ProductItem = ({ id, index, selectedRow }) => {
     >
       <Row gutter={16}>
         <Col span={1}>
-          {/* <AppstoreTwoTone {...listeners} style={{ cursor: 'move' }} /> */}
           <MdDragIndicator {...listeners} style={{ cursor: 'move' }} />
         </Col>
         <Col span={7}>
-          <TextArea rows={4} />
+          <TextArea
+            rows={4}
+            onChange={(e) => updateDataById('description', e.target.value)}
+            value={product.description}
+          />
         </Col>
         <Col span={3}>
-          <Input />
+          <Input
+            onChange={(e) => updateDataById('hsn_code', e.target.value)}
+            value={product.hsn_code}
+          />
         </Col>
         <Col span={4}>
-          <Input type="number" defaultValue={0} />
+          <Input
+            type="number"
+            defaultValue={0}
+            value={product.rate}
+            onChange={(e) => updateDataById('rate', e.target.value)}
+          />
         </Col>
         <Col span={3}>
-          <Input type="number" defaultValue={0} />
+          <Input
+            type="number"
+            defaultValue={0}
+            value={product.qty}
+            onChange={(e) => updateDataById('qty', e.target.value)}
+          />
         </Col>
         <Col span={4}>
-          <Input type="number" defaultValue={0} disabled />
+          <Input
+            type="number"
+            defaultValue={0}
+            disabled
+            value={(product?.rate || 0) * (product?.qty || 0)}
+          />
         </Col>
         <Col span={1}>
-          <DeleteFilled />
+          <DeleteFilled disabled={productCount === 1} />
         </Col>
       </Row>
       {/* ... */}

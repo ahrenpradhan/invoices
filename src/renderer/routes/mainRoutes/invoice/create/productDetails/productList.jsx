@@ -3,7 +3,8 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { createInvoice } from 'renderer/appRedux/slices/invoiceSlice';
 import {
   DndContext,
   closestCenter,
@@ -61,10 +62,27 @@ class PointerSensor extends _PointerSensor {
 }
 
 const ProductList = () => {
+  const dispatch = useDispatch();
   const invoiceProductListRedux = useSelector(
     (_) => _?.invoice?.create?.data?.products
   );
-  const [items, setItems] = useState(['1', '2', '3']);
+  const updatePosition = (active, over) => {
+    const oldIndex = invoiceProductListRedux.map((_) => _.id).indexOf(active);
+    const newIndex = invoiceProductListRedux.map((_) => _.id).indexOf(over);
+    const updatedPositionList = arrayMove(
+      invoiceProductListRedux,
+      oldIndex,
+      newIndex
+    );
+    dispatch(
+      createInvoice({
+        actionType: 'UPDATE_INVOICE_DATA',
+        data: {
+          products: updatedPositionList,
+        },
+      })
+    );
+  };
   const [selectedRow, setSelectedRow] = useState(null);
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -80,11 +98,7 @@ const ProductList = () => {
     const { active, over } = event;
     setSelectedRow(null);
     if (active.id !== over.id) {
-      setItems((_) => {
-        const oldIndex = _.indexOf(active.id);
-        const newIndex = _.indexOf(over.id);
-        return arrayMove(_, oldIndex, newIndex);
-      });
+      updatePosition(active.id, over.id);
     }
   };
   return Array.isArray(invoiceProductListRedux) &&
@@ -104,14 +118,16 @@ const ProductList = () => {
           style={{
             listStyle: 'none',
             padding: 0,
-            mamrgin: 0,
+            margin: 0,
           }}
         >
           {invoiceProductListRedux.map((product, index) => (
             <ProductItem
+              productCount={invoiceProductListRedux.length}
               key={product.id}
               id={product.id}
               index={index}
+              product={product}
               selectedRow={selectedRow}
             />
           ))}

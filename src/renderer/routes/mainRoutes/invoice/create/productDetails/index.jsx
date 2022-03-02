@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input } from 'antd';
 import styled from 'styled-components';
 import { createInvoice } from 'renderer/appRedux/slices/invoiceSlice';
@@ -15,6 +15,9 @@ const ProductAddButton = styled((props) => <Button {...props} />)`
 `;
 
 const ProductDetails = () => {
+  const invoiceProductListRedux = useSelector(
+    (_) => _?.invoice?.create?.data?.products
+  );
   const dispatch = useDispatch();
   const handleNewAddProductToList = () => {
     dispatch(
@@ -53,18 +56,39 @@ const ProductDetails = () => {
             </ProductAddButton>
           </Col>
           <Col span={7} />
-          <Col
-            span={3}
-            style={{ borderTop: '1px solid #f1f1f1', paddingTop: '1em' }}
-          >
-            <Input disabled type="number" defaultValue={0} />
-          </Col>
-          <Col
-            span={4}
-            style={{ borderTop: '1px solid #f1f1f1', paddingTop: '1em' }}
-          >
-            <Input disabled type="number" defaultValue={0} />
-          </Col>
+          {Array.isArray(invoiceProductListRedux) &&
+            invoiceProductListRedux.length && (
+              <>
+                <Col
+                  span={3}
+                  style={{ borderTop: '1px solid #f1f1f1', paddingTop: '1em' }}
+                >
+                  <Input
+                    disabled
+                    type="number"
+                    value={
+                      invoiceProductListRedux
+                        .map((_) => _.qty)
+                        .reduce((acc, ele) => acc + ele, 0) || 0
+                    }
+                  />
+                </Col>
+                <Col
+                  span={4}
+                  style={{ borderTop: '1px solid #f1f1f1', paddingTop: '1em' }}
+                >
+                  <Input
+                    disabled
+                    type="number"
+                    value={
+                      invoiceProductListRedux
+                        .map((_) => (_?.qty || 0) * (_?.rate || 0))
+                        .reduce((acc, ele) => acc + ele, 0) || 0
+                    }
+                  />
+                </Col>
+              </>
+            )}
         </Row>
       </div>
     </>
